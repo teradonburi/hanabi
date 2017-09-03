@@ -4,13 +4,9 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
 import com.teradonburi.hanabi.game.geometory.Geometory;
-import com.teradonburi.hanabi.game.geometory.Triangle;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.microedition.khronos.egl.EGLConfig;
