@@ -38,6 +38,18 @@ public class MainFragment extends LifecycleFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        binding.surfaceView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        binding.surfaceView.onPause();
+    }
+
+    @Override
     protected void prepare(LifecycleComponent component) {
         viewModel = component.mainFragmentViewModel();
     }

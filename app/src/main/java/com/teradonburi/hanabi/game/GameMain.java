@@ -4,6 +4,7 @@ import android.opengl.GLSurfaceView;
 
 import com.teradonburi.hanabi.entity.UserEntity;
 import com.teradonburi.hanabi.game.geometory.Triangle;
+import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
 
 import javax.inject.Inject;
 
@@ -11,18 +12,22 @@ import javax.inject.Inject;
  * Created by daiki on 2017/09/03.
  */
 
+@Lifecycle
 public class GameMain implements GameRendererEvent{
 
     private final SaveData saveData;
     private final GameRenderer renderer;
-    public UserEntity userEntity;
-    private Triangle triangle;
+    private final Triangle triangle;
+    private UserEntity userEntity;
 
 
     @Inject
-    public GameMain(final SaveData saveData,final GameRenderer renderer){
+    public GameMain(final SaveData saveData,
+                    final GameRenderer renderer,
+                    final Triangle triangle){
         this.saveData = saveData;
         this.renderer = renderer;
+        this.triangle = triangle;
         this.renderer.setRendererEvent(this);
         loadUser();
     }
@@ -45,10 +50,17 @@ public class GameMain implements GameRendererEvent{
         return renderer;
     }
 
+    // サーフェスの初期化処理
     @Override
-    public void onSurfaceCreated() {
-        triangle = new Triangle();
+    public void onGameInit() {
+        triangle.shaderLoad();
         this.renderer.addGeometory(triangle);
     }
+
+    @Override
+    public void onGameLoop() {
+
+    }
+
 
 }

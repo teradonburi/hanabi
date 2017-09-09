@@ -6,5 +6,7 @@ package com.teradonburi.hanabi.game;
 
 public interface GameRendererEvent {
 
-    void onSurfaceCreated();
+    void onGameInit();
+
+    void onGameLoop();
 }
