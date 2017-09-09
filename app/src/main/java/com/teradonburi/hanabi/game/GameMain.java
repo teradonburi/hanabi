@@ -1,12 +1,18 @@
 package com.teradonburi.hanabi.game;
 
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
+import android.os.SystemClock;
+import android.support.v7.app.AppCompatActivity;
 
 import com.teradonburi.hanabi.entity.UserEntity;
+import com.teradonburi.hanabi.game.geometory.Geometory;
 import com.teradonburi.hanabi.game.geometory.Triangle;
+import com.teradonburi.hanabi.game.math.Matrix44;
 import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
 
 import javax.inject.Inject;
+import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Created by daiki on 2017/09/03.
@@ -15,19 +21,37 @@ import javax.inject.Inject;
 @Lifecycle
 public class GameMain implements GameRendererEvent{
 
+    private final AppCompatActivity activity;
     private final SaveData saveData;
     private final GameRenderer renderer;
-    private final Triangle triangle;
+    private Matrix44 modelMatrix;
+    private Camera camera;
+    private Matrix44 projMatrix;
+    private Matrix44 modelViewProjectionMatrix;
+
+    private Triangle triangle;
+    private Shader shader;
+
     private UserEntity userEntity;
 
 
     @Inject
-    public GameMain(final SaveData saveData,
-                    final GameRenderer renderer,
-                    final Triangle triangle){
+    public GameMain(final AppCompatActivity activity,
+                    final SaveData saveData,
+                    final GameRenderer renderer){
+        this.activity = activity;
         this.saveData = saveData;
         this.renderer = renderer;
-        this.triangle = triangle;
+
+
+        this.modelMatrix = new Matrix44();
+        this.camera = new Camera();
+        this.projMatrix = new Matrix44();
+        this.modelViewProjectionMatrix = new Matrix44();
+
+        this.triangle = new Triangle();
+        this.shader = new Shader(activity);
+
         this.renderer.setRendererEvent(this);
         loadUser();
     }
@@ -53,12 +77,39 @@ public class GameMain implements GameRendererEvent{
     // サーフェスの初期化処理
     @Override
     public void onGameInit() {
-        triangle.shaderLoad();
-        this.renderer.addGeometory(triangle);
+        shader.load("vertex.shader","fragment.shader");
+        triangle.setShader(shader);
+        renderer.addGeometory(triangle);
+    }
+
+    // サーフェスの向きが変わった（画面が回転した）
+    @Override
+    public void onSurfaceChange(GL10 gl, int width, int height) {
+        // 射影変換行列作成
+       projMatrix = Matrix44.createProjectionMatrix((float)width/height,1.0f,1000.0f);
     }
 
     @Override
     public void onGameLoop() {
+
+        // プリミティブをアニメーション
+        // 経過秒から回転角度を求める(10秒/周)
+        long time = SystemClock.uptimeMillis() % 10000L;
+        float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
+
+        // ワールド行列に対して回転をかける
+        modelMatrix.identity();
+        modelMatrix.rotateZ(angleInDegrees);
+
+        // カメラ更新
+        camera.update();
+
+        modelViewProjectionMatrix.identity();
+        modelViewProjectionMatrix.mul(modelMatrix);
+        modelViewProjectionMatrix.mul(camera.getViewMatrix());
+        modelViewProjectionMatrix.mul(projMatrix);
+
+        Geometory.setMVPMatrix(modelViewProjectionMatrix);
 
     }
 

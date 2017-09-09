@@ -8,9 +8,6 @@ import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 
 import javax.inject.Inject;
 
@@ -35,36 +32,35 @@ public class Shader {
     public void load(String vertexShaderFileName,String fragmentShaderFileName){
         vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, load(vertexShaderFileName));
         fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, load(fragmentShaderFileName));
+        checkShaderCompile(vertexShader);
+        checkShaderCompile(fragmentShader);
         shaderProgram = GLES20.glCreateProgram();
         GLES20.glAttachShader(shaderProgram, vertexShader);
         GLES20.glAttachShader(shaderProgram, fragmentShader);
+
+
+        GLES20.glBindAttribLocation(shaderProgram, 0, "a_Position");  // attributeのindexを設定
+        GLES20.glBindAttribLocation(shaderProgram, 1, "a_Color");  // attributeのindexを設定
+
+
         GLES20.glLinkProgram(shaderProgram);
+        checkShaderLink(shaderProgram);
     }
 
     public void attach(){
         GLES20.glUseProgram(shaderProgram);
     }
 
-    public void drawTriangle(){
+    public void bindAttribute(int index,String attr){
+        GLES20.glBindAttribLocation(shaderProgram, index, attr);  // attributeのindexを設定
+    }
 
+    public int getAttribute(String attr){
+        return GLES20.glGetAttribLocation(shaderProgram, attr);
+    }
 
-        float vertices[] = {
-                0.0f, 0.5f, 0.0f,//三角形の点A(x,y,z)
-                -0.5f, -0.5f, 0.0f,//三角形の点B(x,y,z)
-                0.5f, -0.5f, 0.0f//三角形の点C(x,y,z)
-        };
-        ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        FloatBuffer vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(vertices);
-        vertexBuffer.position(0);
-
-
-        int positionAttrib = GLES20.glGetAttribLocation(shaderProgram, "vPosition");
-        GLES20.glEnableVertexAttribArray(positionAttrib);
-        GLES20.glVertexAttribPointer(positionAttrib, 3, GLES20.GL_FLOAT, false, 3 * 4, vertexBuffer);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertices.length/3);
-        GLES20.glDisableVertexAttribArray(positionAttrib);
+    public int getUniform(String uniform){
+        return GLES20.glGetUniformLocation(shaderProgram,uniform);
     }
 
     private int loadShader(int type, String shaderCode){
@@ -72,6 +68,30 @@ public class Shader {
         GLES20.glShaderSource(shader, shaderCode);
         GLES20.glCompileShader(shader);
         return shader;
+    }
+
+    private void checkShaderCompile(int shaderHandle){
+        // コンパイル結果のチェック
+        final int[] compileStatus = new int[1];
+        GLES20.glGetShaderiv(shaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
+
+        if (compileStatus[0] == 0) {
+            // コンパイル失敗
+            GLES20.glDeleteShader(shaderHandle);
+            throw new RuntimeException("Error creating shader.");
+        }
+    }
+
+    public void checkShaderLink(int programHandle){
+        // リンク結果のチェック
+        final int[] linkStatus = new int[1];
+        GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
+
+        if (linkStatus[0] == 0) {
+            // リンク失敗
+            GLES20.glDeleteProgram(programHandle);
+            throw new RuntimeException("Error link shader.");
+        }
     }
 
 
@@ -89,7 +109,7 @@ public class Shader {
                 // １行ずつ読み込み、改行を付加する
                 String str;
                 while ((str = br.readLine()) != null) {
-                    code += str;
+                    code += str + "\n";
                 }
             } finally {
                 if (is != null) is.close();

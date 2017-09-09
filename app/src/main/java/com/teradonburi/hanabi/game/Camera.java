@@ -2,6 +2,11 @@ package com.teradonburi.hanabi.game;
 
 import android.opengl.Matrix;
 
+import com.teradonburi.hanabi.game.math.Matrix44;
+import com.teradonburi.hanabi.game.math.Vector3;
+
+import javax.inject.Inject;
+
 
 /**
  * Created by daiki on 2017/09/09.
@@ -9,33 +14,34 @@ import android.opengl.Matrix;
 
 public class Camera
 {
-    private float[] mViewMatrix = new float[16]; // ビュー行列
+    private Matrix44 viewMatrix = new Matrix44(); // ビュー行列
+    private Vector3 eye = new Vector3(0.0f, 0.0f, 1.5f);   // カメラの視点
+    private Vector3 look = new Vector3(0.0f, 0.0f, -5.0f); // カメラの注視点
+    private Vector3 up = new Vector3(0.0f, 1.0f, 0.0f);    // カメラの上方向
 
-    private float[] eye = {0.0f, 0.0f, 1.5f};   // カメラの視点
-    private float[] look = {0.0f, 0.0f, -5.0f}; // カメラの注視点
-    private float[] up = {0.0f, 1.0f, 0.0f};    // カメラの上方向
-
+    @Inject
     public void Camera(){
-        // カメラ(ビュー行列)を設定
     }
 
-    public void setEye(float x,float y,float z){
+    public void setEye(Vector3 eye) {
+        this.eye = eye;
     }
 
-    public void setLookAt(float x,float y,float z){
-
+    public void setLook(Vector3 look) {
+        this.look = look;
     }
 
-    public void setUp(float x,float y,float z){
-
+    public void setUp(Vector3 up) {
+        this.up = up;
     }
 
     public void update(){
+        // カメラ(ビュー行列)を設定
+        viewMatrix = Matrix44.createViewMatrix(eye,look,up);
+    }
 
-        Matrix.setLookAtM(mViewMatrix, 0,
-                eye[0], eye[1], eye[2],
-                look[0], look[1], look[2],
-                up[0], up[1], up[2]);
+    public Matrix44 getViewMatrix(){
+        return viewMatrix;
     }
 
 }
