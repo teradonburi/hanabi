@@ -1,15 +1,9 @@
 package com.teradonburi.hanabi.game.geometory;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
-import android.os.SystemClock;
 
-import com.teradonburi.hanabi.game.Shader;
+import com.teradonburi.hanabi.game.shader.ColorShader;
 import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 
 import javax.inject.Inject;
 
@@ -21,6 +15,11 @@ import javax.inject.Inject;
 public class Triangle extends Geometory
 {
 
+    private static final int VERTEX_STRIDE = 7;
+    private static final int POS_CURSOR = 0;
+    private static final int COLOR_CURSOR = 4;
+    private static final int POS_SIZE = 3;
+    private static final int COLOR_SIZE = 4;
 
     // 頂点バッファ生成
     final float[] vertices = {
@@ -38,34 +37,42 @@ public class Triangle extends Geometory
             0.0f, 1.0f, 0.0f, 1.0f
     };
 
+    short[] indices = new short[] {
+            0, 1, 2
+    };
+
     @Inject
     public Triangle(){
-        setVertexBuffer(vertices);
+        vertexBuffer.create(vertices);
     }
 
     @Override
     public void draw(){
         shader.attach();
 
-        // ハンドル(ポインタ)の取得
-        int mMVPMatrixHandle = shader.getUniform("u_MVPMatrix");
-        int mPositionHandle = shader.getAttribute("a_Position");
-        int mColorHandle = shader.getAttribute("a_Color");
+        if(shader instanceof ColorShader){
+            ColorShader colorShader = (ColorShader) shader;
 
+            // ハンドル(ポインタ)の取得
+            int handleMVPMatrix = colorShader.getUniformMVPMatrix();
+            int handlePos = colorShader.getAttributePosition();
+            int handleColor = colorShader.getAttributeColor();
 
-        // OpenGLに頂点バッファを渡す
-        vertexBuffer.position(0);  // 頂点バッファを座標属性にセット
-        GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 7 * 4, vertexBuffer);  // ポインタと座標属性を結び付ける
-        GLES20.glEnableVertexAttribArray(mPositionHandle);  // 座標属性有効
+            // OpenGLに頂点バッファを渡す
+            vertexBuffer.setPosition(POS_CURSOR);  // 頂点バッファを座標属性にセット
+            GLES20.glVertexAttribPointer(handlePos, POS_SIZE, GLES20.GL_FLOAT, false, VERTEX_STRIDE * VertexBuffer.BytesPerFloat, vertexBuffer.getBuffer());  // ポインタと座標属性を結び付ける
+            GLES20.glEnableVertexAttribArray(handlePos);  // 座標属性有効
 
-        vertexBuffer.position(4);  // 頂点バッファを色属性にセット
-        GLES20.glVertexAttribPointer(mColorHandle, 4, GLES20.GL_FLOAT, false, 7 * 4, vertexBuffer);  // ポインタと色属性を結び付ける
-        GLES20.glEnableVertexAttribArray(mColorHandle);  // 色属性有効
+            vertexBuffer.setPosition(COLOR_CURSOR);  // 頂点バッファを色属性にセット
+            GLES20.glVertexAttribPointer(handleColor, COLOR_SIZE, GLES20.GL_FLOAT, false, VERTEX_STRIDE * VertexBuffer.BytesPerFloat, vertexBuffer.getBuffer());  // ポインタと色属性を結び付ける
+            GLES20.glEnableVertexAttribArray(handleColor);  // 色属性有効
 
-        // ワールド行列×ビュー行列×射影行列をセット
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, MVPMatrix.m, 0);
+            // ワールド行列×ビュー行列×射影行列をセット
+            GLES20.glUniformMatrix4fv(handleMVPMatrix, 1, false, MVPMatrix.m, 0);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);  // 三角形を描画
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);  // 三角形を描画
+        }
+
     }
 
 }

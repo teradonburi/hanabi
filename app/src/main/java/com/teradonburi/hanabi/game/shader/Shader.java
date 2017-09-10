@@ -1,35 +1,33 @@
-package com.teradonburi.hanabi.game;
+package com.teradonburi.hanabi.game.shader;
 
 import android.opengl.GLES20;
 import android.support.v7.app.AppCompatActivity;
-
-import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.inject.Inject;
 
 /**
  * Created by daiki on 2017/09/09.
  */
 
-@Lifecycle
-public class Shader {
+public abstract class Shader {
 
     private final AppCompatActivity activity;
 
     private int vertexShader;
     private int fragmentShader;
-    private int shaderProgram;
+    protected int shaderProgram;
 
-    @Inject
+    public abstract void loadShader();
+    public abstract void bindAttributes();
+
     public Shader(AppCompatActivity activity){
         this.activity = activity;
     }
 
-    public void load(String vertexShaderFileName,String fragmentShaderFileName){
+    protected void load(String vertexShaderFileName,String fragmentShaderFileName){
         vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, load(vertexShaderFileName));
         fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, load(fragmentShaderFileName));
         checkShaderCompile(vertexShader);
@@ -38,10 +36,7 @@ public class Shader {
         GLES20.glAttachShader(shaderProgram, vertexShader);
         GLES20.glAttachShader(shaderProgram, fragmentShader);
 
-
-        GLES20.glBindAttribLocation(shaderProgram, 0, "a_Position");  // attributeのindexを設定
-        GLES20.glBindAttribLocation(shaderProgram, 1, "a_Color");  // attributeのindexを設定
-
+        bindAttributes();
 
         GLES20.glLinkProgram(shaderProgram);
         checkShaderLink(shaderProgram);
@@ -50,6 +45,7 @@ public class Shader {
     public void attach(){
         GLES20.glUseProgram(shaderProgram);
     }
+
 
     public void bindAttribute(int index,String attr){
         GLES20.glBindAttribLocation(shaderProgram, index, attr);  // attributeのindexを設定

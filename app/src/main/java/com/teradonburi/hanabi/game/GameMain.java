@@ -1,7 +1,6 @@
 package com.teradonburi.hanabi.game;
 
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 
@@ -9,6 +8,8 @@ import com.teradonburi.hanabi.entity.UserEntity;
 import com.teradonburi.hanabi.game.geometory.Geometory;
 import com.teradonburi.hanabi.game.geometory.Triangle;
 import com.teradonburi.hanabi.game.math.Matrix44;
+import com.teradonburi.hanabi.game.shader.ColorShader;
+import com.teradonburi.hanabi.game.shader.Shader;
 import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
 
 import javax.inject.Inject;
@@ -30,7 +31,7 @@ public class GameMain implements GameRendererEvent{
     private Matrix44 modelViewProjectionMatrix;
 
     private Triangle triangle;
-    private Shader shader;
+    private ColorShader shader;
 
     private UserEntity userEntity;
 
@@ -50,7 +51,7 @@ public class GameMain implements GameRendererEvent{
         this.modelViewProjectionMatrix = new Matrix44();
 
         this.triangle = new Triangle();
-        this.shader = new Shader(activity);
+        this.shader = new ColorShader(activity);
 
         this.renderer.setRendererEvent(this);
         loadUser();
@@ -77,7 +78,7 @@ public class GameMain implements GameRendererEvent{
     // サーフェスの初期化処理
     @Override
     public void onGameInit() {
-        shader.load("vertex.shader","fragment.shader");
+        shader.loadShader();
         triangle.setShader(shader);
         renderer.addGeometory(triangle);
     }
