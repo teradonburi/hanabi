@@ -1,6 +1,5 @@
 package com.teradonburi.hanabi.game.shader;
 
-import android.opengl.GLES20;
 import android.support.v7.app.AppCompatActivity;
 
 import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
@@ -21,7 +20,7 @@ public class ColorShader extends Shader{
 
     @Override
     public void loadShader() {
-        load("vertex.shader","fragment.shader");
+        load("vertex_color.shader", "fragment_color.shader");
     }
 
     @Override

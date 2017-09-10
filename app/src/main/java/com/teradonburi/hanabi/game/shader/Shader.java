@@ -1,11 +1,18 @@
 package com.teradonburi.hanabi.game.shader;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
+import android.support.annotation.DrawableRes;
 import android.support.v7.app.AppCompatActivity;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import javax.microedition.khronos.opengles.GL10;
 
 
 /**
@@ -88,6 +95,17 @@ public abstract class Shader {
             GLES20.glDeleteProgram(programHandle);
             throw new RuntimeException("Error link shader.");
         }
+    }
+
+    public int loadTexture(@DrawableRes int res)
+    {
+        int texture[] = new int[1];
+        Bitmap bmp = BitmapFactory.decodeResource(activity.getResources(), res);
+        GLES20.glGenTextures(1, texture, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture[0]);
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bmp, 0);
+        bmp.recycle();
+        return texture[0];
     }
 
 

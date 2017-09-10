@@ -37,9 +37,6 @@ public class Triangle extends Geometory
             0.0f, 1.0f, 0.0f, 1.0f
     };
 
-    short[] indices = new short[] {
-            0, 1, 2
-    };
 
     @Inject
     public Triangle(){

@@ -6,10 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.teradonburi.hanabi.entity.UserEntity;
 import com.teradonburi.hanabi.game.geometory.Geometory;
+import com.teradonburi.hanabi.game.geometory.Square;
 import com.teradonburi.hanabi.game.geometory.Triangle;
 import com.teradonburi.hanabi.game.math.Matrix44;
 import com.teradonburi.hanabi.game.shader.ColorShader;
-import com.teradonburi.hanabi.game.shader.Shader;
+import com.teradonburi.hanabi.game.shader.TextureShader;
 import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
 
 import javax.inject.Inject;
@@ -31,7 +32,9 @@ public class GameMain implements GameRendererEvent{
     private Matrix44 modelViewProjectionMatrix;
 
     private Triangle triangle;
-    private ColorShader shader;
+    private Square square;
+    private ColorShader colorShader;
+    private TextureShader textureShader;
 
     private UserEntity userEntity;
 
@@ -51,7 +54,9 @@ public class GameMain implements GameRendererEvent{
         this.modelViewProjectionMatrix = new Matrix44();
 
         this.triangle = new Triangle();
-        this.shader = new ColorShader(activity);
+        this.square = new Square();
+        this.colorShader = new ColorShader(activity);
+        this.textureShader = new TextureShader(activity);
 
         this.renderer.setRendererEvent(this);
         loadUser();
@@ -78,9 +83,13 @@ public class GameMain implements GameRendererEvent{
     // サーフェスの初期化処理
     @Override
     public void onGameInit() {
-        shader.loadShader();
-        triangle.setShader(shader);
+        colorShader.loadShader();
+        textureShader.loadShader();
+        triangle.setShader(colorShader);
+        square.setShader(textureShader);
+        square.loadTexture();
         renderer.addGeometory(triangle);
+        renderer.addGeometory(square);
     }
 
     // サーフェスの向きが変わった（画面が回転した）
@@ -111,7 +120,6 @@ public class GameMain implements GameRendererEvent{
         modelViewProjectionMatrix.mul(projMatrix);
 
         Geometory.setMVPMatrix(modelViewProjectionMatrix);
-
     }
 
 

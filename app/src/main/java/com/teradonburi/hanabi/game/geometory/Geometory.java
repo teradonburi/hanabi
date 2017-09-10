@@ -18,14 +18,15 @@ public abstract class Geometory {
     private String id;
     protected Shader shader;
     protected VertexBuffer vertexBuffer;
+    protected IndexBuffer indexBuffer;
+    protected TextureBuffer textureBuffer;
     protected static Matrix44 MVPMatrix;
-
-    public static void setMVPMatrix(Matrix44 MVPMatrix) {
-        Geometory.MVPMatrix = MVPMatrix;
-    }
 
     public Geometory(){
         id = UUID.randomUUID().toString();
+        vertexBuffer = new VertexBuffer();
+        indexBuffer = new IndexBuffer();
+        textureBuffer = new TextureBuffer();
     }
 
     public String getId(){
@@ -37,4 +38,8 @@ public abstract class Geometory {
     }
 
     public abstract void draw();
+
+    public static void setMVPMatrix(Matrix44 MVPMatrix) {
+        Geometory.MVPMatrix = MVPMatrix;
+    }
 }
