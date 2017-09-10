@@ -58,23 +58,28 @@ public class Square extends Geometory{
             textureShader.setTextureFiltering();
             textureShader.enableBlending(true);
 
-            GLES20.glEnableVertexAttribArray(handlePosition);
-            GLES20.glEnableVertexAttribArray(handleTexcoord);
-
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTexture);
             GLES20.glUniform1i(handleTexture, 0);
+
+            GLES20.glEnableVertexAttribArray(handlePosition);
+            GLES20.glEnableVertexAttribArray(handleTexcoord);
 
             GLES20.glVertexAttribPointer(handleTexcoord, 2, GLES20.GL_FLOAT,
                     false, 0, textureBuffer.getBuffer());
             GLES20.glVertexAttribPointer(handlePosition, 3, GLES20.GL_FLOAT,
                     false, 0, vertexBuffer.getBuffer());
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+
+            GLES20.glDrawElements(GLES20.GL_TRIANGLE_STRIP,
+                    indexBuffer.getCapacity(),
+                    GLES20.GL_UNSIGNED_SHORT,
+                    indexBuffer.getBuffer());
 
             GLES20.glDisableVertexAttribArray(handlePosition);
             GLES20.glDisableVertexAttribArray(handleTexcoord);
 
             textureShader.enableBlending(false);
+
         }
 
     }

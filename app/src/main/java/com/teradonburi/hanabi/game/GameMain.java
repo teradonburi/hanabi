@@ -88,8 +88,8 @@ public class GameMain implements GameRendererEvent{
         triangle.setShader(colorShader);
         square.setShader(textureShader);
         square.loadTexture();
-        renderer.addGeometory(triangle);
         renderer.addGeometory(square);
+        renderer.addGeometory(triangle);
     }
 
     // サーフェスの向きが変わった（画面が回転した）
