@@ -8,7 +8,7 @@ import java.nio.FloatBuffer;
  * Created by daiki on 2017/09/10.
  */
 
-public class TextureBuffer {
+public class UVBuffer {
 
     public static final int BytesPerFloat = 4; // floatのバイト数
     protected FloatBuffer buffer;

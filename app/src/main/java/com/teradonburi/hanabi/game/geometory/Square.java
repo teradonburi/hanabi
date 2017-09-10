@@ -16,19 +16,19 @@ import javax.inject.Inject;
 public class Square extends Geometory{
 
     private final float vertices[] = {
-            -1.0f, -1.0f, 0.0f,  //left top
-            -1.0f,  1.0f, 0.0f,   //left bottom
-            1.0f, -1.0f, 0.0f,   //right top
-            1.0f,  1.0f, 0.0f,   //right bottom
+            -1.0f, 1.0f, 0.0f,
+            -1.0f,  0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
     };
     private final short indices[] = {
             0,1,2,3
     };
     private final float texcoords[] = {
-            0.0f, 0.0f,	//left top
-            0.0f, 1.0f,	//left bottom
-            1.0f, 0.0f,	//right top
-            1.0f, 1.0f,	//right bottom
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
     };
 
     int mTexture;
@@ -37,7 +37,7 @@ public class Square extends Geometory{
     public Square() {
         vertexBuffer.create(vertices);
         indexBuffer.create(indices);
-        textureBuffer.create(texcoords);
+        uvBuffer.create(texcoords);
     }
 
     public void loadTexture(){
@@ -66,7 +66,7 @@ public class Square extends Geometory{
             GLES20.glEnableVertexAttribArray(handleTexcoord);
 
             GLES20.glVertexAttribPointer(handleTexcoord, 2, GLES20.GL_FLOAT,
-                    false, 0, textureBuffer.getBuffer());
+                    false, 0, uvBuffer.getBuffer());
             GLES20.glVertexAttribPointer(handlePosition, 3, GLES20.GL_FLOAT,
                     false, 0, vertexBuffer.getBuffer());
 

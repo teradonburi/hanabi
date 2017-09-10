@@ -4,9 +4,6 @@ package com.teradonburi.hanabi.game.geometory;
 import com.teradonburi.hanabi.game.shader.Shader;
 import com.teradonburi.hanabi.game.math.Matrix44;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.util.UUID;
 
 /**
@@ -19,14 +16,14 @@ public abstract class Geometory {
     protected Shader shader;
     protected VertexBuffer vertexBuffer;
     protected IndexBuffer indexBuffer;
-    protected TextureBuffer textureBuffer;
+    protected UVBuffer uvBuffer;
     protected static Matrix44 MVPMatrix;
 
     public Geometory(){
         id = UUID.randomUUID().toString();
         vertexBuffer = new VertexBuffer();
         indexBuffer = new IndexBuffer();
-        textureBuffer = new TextureBuffer();
+        uvBuffer = new UVBuffer();
     }
 
     public String getId(){
