@@ -20,7 +20,7 @@ public class ColorShader extends Shader{
 
     @Override
     public void loadShader() {
-        load("vertex_color.shader", "fragment_color.shader");
+        load("color.vert", "color.frag");
     }
 
     @Override

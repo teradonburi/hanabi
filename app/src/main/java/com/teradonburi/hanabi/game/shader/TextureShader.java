@@ -21,7 +21,7 @@ public class TextureShader extends Shader {
 
     @Override
     public void loadShader() {
-        load("vertex_tex.shader", "fragment_tex.shader");
+        load("tex.vert", "tex.frag");
     }
 
     @Override
