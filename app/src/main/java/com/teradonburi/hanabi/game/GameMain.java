@@ -6,10 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.teradonburi.hanabi.entity.UserEntity;
 import com.teradonburi.hanabi.game.geometory.Geometory;
+import com.teradonburi.hanabi.game.geometory.Sprite;
 import com.teradonburi.hanabi.game.geometory.Square;
 import com.teradonburi.hanabi.game.geometory.Triangle;
 import com.teradonburi.hanabi.game.math.Matrix44;
 import com.teradonburi.hanabi.game.shader.ColorShader;
+import com.teradonburi.hanabi.game.shader.SpriteShader;
 import com.teradonburi.hanabi.game.shader.TextureShader;
 import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
 
@@ -33,8 +35,10 @@ public class GameMain implements GameRendererEvent{
 
     private Triangle triangle;
     private Square square;
+    private Sprite sprite;
     private ColorShader colorShader;
     private TextureShader textureShader;
+    private SpriteShader spriteShader;
 
     private UserEntity userEntity;
 
@@ -55,8 +59,10 @@ public class GameMain implements GameRendererEvent{
 
         this.triangle = new Triangle();
         this.square = new Square();
+        this.sprite = new Sprite();
         this.colorShader = new ColorShader(activity);
-        this.textureShader = new TextureShader(activity);
+        //this.textureShader = new TextureShader(activity);
+        this.spriteShader = new SpriteShader(activity);
 
         this.renderer.setRendererEvent(this);
         loadUser();
@@ -84,11 +90,15 @@ public class GameMain implements GameRendererEvent{
     @Override
     public void onGameInit() {
         colorShader.loadShader();
-        textureShader.loadShader();
+        //textureShader.loadShader();
+        spriteShader.loadShader();
         triangle.setShader(colorShader);
-        square.setShader(textureShader);
-        square.loadTexture();
-        renderer.addGeometory(square);
+        sprite.setShader(spriteShader);
+        sprite.loadTexture();
+        renderer.addGeometory(sprite);
+        //square.setShader(textureShader);
+        //square.loadTexture();
+        //renderer.addGeometory(square);
         renderer.addGeometory(triangle);
     }
 

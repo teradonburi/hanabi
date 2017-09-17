@@ -51,6 +51,15 @@ public class Matrix44 {
         return this;
     }
 
+    public Matrix44 scale(Vector3 vec3){
+        return scale(vec3.getX(),vec3.getY(),vec3.getZ());
+    }
+
+    public Matrix44 scale(float x,float y,float z){
+        Matrix.scaleM(m,0,x,y,z);
+        return this;
+    }
+
     public Matrix44 mul(Matrix44 mat44){
         Matrix.multiplyMM(m, 0, mat44.m, 0, m, 0);
         return this;
