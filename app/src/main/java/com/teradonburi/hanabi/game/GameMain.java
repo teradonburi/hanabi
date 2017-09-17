@@ -109,7 +109,9 @@ public class GameMain implements GameRendererEvent{
 
         // ワールド行列に対して回転をかける
         modelMatrix.identity();
+        modelMatrix.translate((float) Math.cos(angleInDegrees * 0.1),0,0);
         modelMatrix.rotateZ(angleInDegrees);
+        modelMatrix.scale((float) Math.sin(angleInDegrees * 0.1) * 0.5f + 1.0f);
 
         // カメラ更新
         camera.update();

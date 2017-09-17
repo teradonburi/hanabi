@@ -46,6 +46,11 @@ public class Matrix44 {
         return this;
     }
 
+    public Matrix44 scale(float scale){
+        Matrix.scaleM(m,0,scale,scale,scale);
+        return this;
+    }
+
     public Matrix44 mul(Matrix44 mat44){
         Matrix.multiplyMM(m, 0, mat44.m, 0, m, 0);
         return this;
