@@ -27,7 +27,7 @@ jubeatやcytusのような音感ゲームをイメージ
   
 ## ノーツ
   
-![花火](https://github.com/teradonburi/hanabi/hanabi.jpg) 
+![花火](https://github.com/teradonburi/hanabi/blob/develop/hanabi.jpg) 
 
 * 『菊』: 球状に飛散した花火の星が、菊の花びらのように尾を引いた形のもの。他にも、中心に別の色の「芯」を入れて二重、三重にも輪を作る「芯入り菊」などもある。
 * 『冠菊』(かむろぎく) : 菊の尾がより長く、ゆっくりと垂れていく花火。「しだれ柳」とも呼ばれている。
