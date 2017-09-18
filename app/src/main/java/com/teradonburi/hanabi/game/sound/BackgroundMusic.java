@@ -90,8 +90,7 @@ public class BackgroundMusic {
         }
 
         // 繰り返し再生する場合
-        mediaPlayer.stop();
-        mediaPlayer.reset();
+        mediaPlayer.seekTo(0);
 
         // 再生する
         mediaPlayer.start();

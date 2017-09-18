@@ -1,9 +1,12 @@
 package com.teradonburi.hanabi.game;
 
+import android.media.SoundPool;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
+import com.teradonburi.hanabi.R;
 import com.teradonburi.hanabi.entity.UserEntity;
 import com.teradonburi.hanabi.game.geometory.Geometory;
 import com.teradonburi.hanabi.game.geometory.Sprite;
@@ -13,6 +16,8 @@ import com.teradonburi.hanabi.game.math.Matrix44;
 import com.teradonburi.hanabi.game.shader.ColorShader;
 import com.teradonburi.hanabi.game.shader.SpriteShader;
 import com.teradonburi.hanabi.game.shader.TextureShader;
+import com.teradonburi.hanabi.game.sound.BackgroundMusic;
+import com.teradonburi.hanabi.game.sound.SoundEffect;
 import com.teradonburi.hanabi.inject.lifecycle.Lifecycle;
 
 import javax.inject.Inject;
@@ -39,6 +44,8 @@ public class GameMain implements GameRendererEvent{
     private ColorShader colorShader;
     private TextureShader textureShader;
     private SpriteShader spriteShader;
+    private BackgroundMusic backgroundMusic;
+    private SoundEffect soundEffects;
 
     private UserEntity userEntity;
 
@@ -65,6 +72,18 @@ public class GameMain implements GameRendererEvent{
         this.spriteShader = new SpriteShader(activity);
 
         this.renderer.setRendererEvent(this);
+
+        this.backgroundMusic = new BackgroundMusic(activity);
+        this.backgroundMusic.load(R.raw.bgm);
+        this.backgroundMusic.play(true);
+        this.soundEffects = new SoundEffect(activity);
+        this.soundEffects.load(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+
+            }
+        },R.raw.ok);
+
         loadUser();
     }
 
@@ -107,6 +126,10 @@ public class GameMain implements GameRendererEvent{
     public void onSurfaceChange(GL10 gl, int width, int height) {
         // 射影変換行列作成
        projMatrix = Matrix44.createProjectionMatrix((float)width/height,1.0f,1000.0f);
+    }
+
+    public void onTouch(View view){
+        this.soundEffects.play(R.raw.ok);
     }
 
     @Override

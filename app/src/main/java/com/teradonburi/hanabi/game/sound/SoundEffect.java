@@ -54,13 +54,10 @@ public class SoundEffect {
     }
 
     public void play(@RawRes int resourceId){
-        // .wav の再生
-        // play(ロードしたID, 左音量, 右音量, 優先度, ループ,再生速度)
-        play(soundIds.get(resourceId),1.0f,1.0f,1.0f);
+        play(resourceId,1.0f,1.0f,1.0f);
     }
 
     public void play(@RawRes int resourceId,float volumeLeft,float volumeRight,float speed){
-        // .wav の再生
         // play(ロードしたID, 左音量, 右音量, 優先度, ループ,再生速度)
         soundPool.play(soundIds.get(resourceId),volumeLeft,volumeRight,0,0,speed);
     }
